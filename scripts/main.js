@@ -57,11 +57,11 @@
     var l = testString.length;
     var start = new Date().getTime();
     console.log('COMPRESS');
-    var compressed = JJLC.compress(testString);;
+    var compressed = JJLC.compress(testString);
 
-    console.log('initial size : ' + l);
-    console.log('compressed size : ' + compressed.length);
-    console.log('win : ' + (l - compressed.length) + ' car');
+    console.log('initial size : ' + l + ' c');
+    console.log('compressed size : ' + compressed.length + ' c');
+    console.log('win : ' + (l - compressed.length) + ' c');
     console.log('win : ' + ((l - compressed.length) / l * 100).toPrecision(3) + '%');
 
     console.log('DECOMPRESS');
@@ -69,7 +69,5 @@
     var decompressed = JJLC.decompress(compressed);
     var end = new Date().getTime();
     var time = end - start;
-    
-    console.log(decompressed);
     console.log('execution : ' + time + ' milliseconds');
 }());
