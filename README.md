@@ -1,7 +1,7 @@
 # JJLC
 Javascript Json Live Compression
 
-JJLC allow you to compress json files. It automatically create map with the JSON Schema and save lot of file due to redondance of schema in JSON.
+JJLC allow you to compress json files. It automatically create map with the JSON Schema and save lot of size due to redondance of schema in JSON.
 
 * Very useful to save lot of size when you store json in localStorage.
 * Remove multiple space in JSON
