@@ -57,7 +57,7 @@
     var l = testString.length;
     var start = new Date().getTime();
     console.log('COMPRESS');
-    var compressed = JJLC.compress(testString);
+    var compressed = JJLC.localStorageCompress('testStr', testString);
 
     console.log('initial size : ' + l + ' c');
     console.log('compressed size : ' + compressed.length + ' c');
@@ -65,8 +65,8 @@
     console.log('win : ' + ((l - compressed.length) / l * 100).toPrecision(3) + '%');
 
     console.log('DECOMPRESS');
-
-    var decompressed = JJLC.decompress(compressed);
+    var decompressed = JJLC.localStorageDecompress('testStr');
+    //var decompressed = JJLC.decompress(compressed);
     var end = new Date().getTime();
     var time = end - start;
     console.log('execution : ' + time + ' milliseconds');
