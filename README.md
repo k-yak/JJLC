@@ -9,6 +9,9 @@ JJLC allow you to compress json files and save it in localStorage. It automatica
 ### Version
 1.1
 
+### Demo
+http://k-yak.github.io/JJLC/
+
 ### Installation
 
 add to your html file
