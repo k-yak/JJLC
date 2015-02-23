@@ -100,8 +100,9 @@
             if(typeof ns !== 'undefined' && ns === 'local-dict') {
                 dicts[key] = dict;
             }
-            
-            localStorage.setItem(key, compressed);
+            else {
+                localStorage.setItem(key, compressed);
+            }
             
             if(typeof dicts[key] === 'undefined') {
                 localStorage.setItem('d_' + key, JSON.stringify(dict));
