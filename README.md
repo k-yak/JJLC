@@ -1,13 +1,13 @@
 # JJLC
-Javascript Json Live Compression
+Javascript Json Live Compression for localStorage
 
-JJLC allow you to compress json files. It automatically create map with the JSON Schema and save lot of size due to redondance of schema in JSON.
+JJLC allow you to compress json files and save it in localStorage. It automatically create map with the JSON Schema and save lot of size due to redondance of schema in JSON.
 
 * Very useful to save lot of size when you store json in localStorage.
 * Remove multiple space in JSON
 
 ### Version
-1.0
+1.1
 
 ### Installation
 
@@ -22,95 +22,90 @@ add to your html file
 * basic usage
 ```js
 //compress
-var compressed = JJLC.compress(testString);
-localStorage.setItem('data', compressed);
+var compressed = JJLC.setItem('test', json);
 //decompress
-var compressedLS = localStorage.getItem('data');
-var decompressed = JJLC.decompress(compressedLS);
+var decompressed = JJLC.getItem('test');
+```
+* setItem option
+```js
+//by default setItem check if your json is well formated and remove extra space
+//if it doesn't setItem can fail
+//so you can bypass this verification with
+var compressed = JJLC.setItem('test', json, 'no-beautify');
+//decompress
+var decompressed = JJLC.getItem('test');
+```
+```js
+//use local dict previously check with setDict with dont-store-dict option
+var compressed = JJLC.setItem('test', json, 'local-dict');
+//decompress
+var decompressed = JJLC.getItem('test');
+```
+* manage dictionaries
+```js
+var dict = JJLC.getDict('key');
+//basic usage
+JJLC.setDict('key', dict);
+//don't use localStorage to store dictionary, but a simple variable
+JJLC.setDict('key', dict, 'no-localstorage');
 ```
 
-### How It works
+###Expert mode
+The objective is to save even more space, saving dictionary directly in a javascript file
 
-####Compress
-
-* create map with JSON schema and repetition in JSON string 
-
+* Step  1
+Create dictionary with your huge json.
 ```js
-{
-'"firstname"' : 2,
-'"fullAddress"' : 1,
-'"id"' : 4
-}
+    var compressed = JJLC.setItem('testStr', tst_s);
+    var dict = JSON.stringify(JJLC.getDict('testStr'));
+    console.log(dict);
+```
+* Step 2 : copy/paste in your main.js file, in a dict variable, and use it
+```js
+    var dict =  {"\"type\":":"£a£","\"description\":":"£b£","\"id\":":"£c£","\"name\":":"£d£","\"price\":":"£e£","\"minimum\":":"£f£","\"exclusiveMinimum\":":"£g£","\"tags\":":"£h£","\"items\":":"£i£","\"minItems\":":"£j£","\"uniqueItems\":":"£k£","\"products\":":"£l£","\"title\":":"£m£","\"required\":":"£n£"};
+    
+    //compress
+    JJLC.setDict('test', dict, 'no-localstorage');
+	var compressed = JJLC.setItem('test', json, 'local-dict');
+	//decompress
+	var decompressed = JJLC.getItem('test');
 ```
 
-* sort map to use little key for more use string
-
-```js
-{
-'"id"' : 4,
-'"firstname"' : 2,
-'"fullAddress"' : 1
-}
-```
-
-* replace number with generated keys
-
-```js
-{
-'"id"' : "£a£",
-'"firstname"' : "£b£",
-'"fullAddress"' : "£c£"
-}
-```
-
-* replace all key by value in javascript
-
-```js
- {"$schema":"http://json-schema.org/draft-04/schema#",£r£:£s£,£b£:"A product from Acme's catalog",£a£:£p£,£q£:[{£e£:{£b£:"The unique identifier for a product",£a£:£g£},£f£:{£b£:"Name of the product",£a£:£c£},£d£:{£a£:£o£,£i£:0,£j£:true},£k£:{£a£:£l£,£m£:{£a£:£c£},£n£:1,£h£:true}},{£e£:{£b£:"The unique identifier for a product",£a£:£g£},£f£:{£b£:"Name of the product",£a£:£c£},£d£:{£a£:£o£,£i£:0,£j£:true},£k£:{£a£:£l£,£m£:{£a£:£c£},£n£:1,£h£:true}}],£t£:[£e£,£f£,£d£]}
-```
-
-* hash result and save the map corresponding to this hash
-
-```js
-{'KachgdiLk45dKJ' : {
-'"id"' : "£a£",
-'"firstname"' : "£b£",
-'"fullAddress"' : "£c£"
-}
-}
-```
-
-####Decompress
-
-* hash compressed data and get the map corresponding to this hash
-
-```js
-{'KachgdiLk45dKJ' : {
-'"id"' : "£a£",
-'"firstname"' : "£b£",
-'"fullAddress"' : "£c£"
-}
-}
-```
-
-* replace all value by key in javascript
-
-```js
- {"$schema":"http://json-schema.org/draft-04/schema#","title":"Product","description":"A product from Acme's catalog","type":"object","products":[{"id":{"description":"The unique identifier for a product","type":"integer"},"name":{"description":"Name of the product","type":"string"},"price":{"type":"number","minimum":0,"exclusiveMinimum":true},"tags":{"type":"array","items":{"type":"string"},"minItems":1,"uniqueItems":true}},{"id":{"description":"The unique identifier for a product","type":"integer"},"name":{"description":"Name of the product","type":"string"},"price":{"type":"number","minimum":0,"exclusiveMinimum":true},"tags":{"type":"array","items":{"type":"string"},"minItems":1,"uniqueItems":true}}],"required":["id","name","price"]}
- ```
 
 ###Results
 
+####little file 
 ```
 COMPRESS
 initial size : 1065 c
-compressed size : 469 c
-win : 596 c
-win : 56.0%
+compressed size : 796 c
+win : 269 c
+win : 25.3%
 DECOMPRESS
-execution : 17 milliseconds
+execution : 12 milliseconds
 ```
 
+####big file
+```
+COMPRESS
+initial size : 342359 c
+compressed size : 201528 c
+win : 140831 c
+win : 41.1%
+DECOMPRESS
+execution : 89 milliseconds
+```
+
+####little file - expert mode
+```
+COMPRESS
+initial size : 1065 c
+compressed size : 501 c
+win : 564 c
+win : 53.0%
+DECOMPRESS
+8 milliseconds
+```
 License
 ----
 
