@@ -1,6 +1,6 @@
 (function (root) {
     "use strict";
-    var regex = /\"[a-zA-Z0-9]*\"/g,
+    var regex = /\"[a-zA-Z0-9]*\":/g,
         separator = '£',
         seed = 0xABCD,
         dicts = {};
@@ -83,86 +83,70 @@
         return v;
     }
     
-    function JJLC() {
-        this.compress = function (s, beautify) {
-            var dict,
-                res,
-                h,
-                sObject;
-            
-            if (typeof beautify === 'undefined') {
-                sObject = JSON.parse(s);
-                s = JSON.stringify(sObject);
-            }
-            dict = _createDict(s);
-            res = _compress(s, dict);
-            h = XXH(res, seed).toString(16);
-
-            dicts[h] = dict;
-            return res;
-        };
-        
-        this.decompress = function (s) {
-            var h = XXH(s, seed).toString(16);
-            return _decompress(s, dicts[h]);
-        };
-        
-        this.localStorageCompress = function (key, str) {
+    function JJLC() {        
+        this.setItem = function (key, str, ns) {
             var compressed,
-                h;
+                sObject,
+                dict;
             
-            compressed = this.compress(str);
-            h = XXH(compressed, seed).toString(16);
+            if(typeof ns === 'undefined' || ns !== 'no-beautify') {
+                sObject = JSON.parse(str);
+                str = JSON.stringify(sObject);
+            }
+            
+            dict = _createDict(str);
+            compressed = _compress(str, dict);
+
+            if(typeof ns !== 'undefined' && ns === 'local-dict') {
+                dicts[key] = dict;
+            }
             
             localStorage.setItem(key, compressed);
             
-            if(typeof dicts[key] === 'undefined')
-                localStorage.setItem('d_' + h, JSON.stringify(dicts[h]));
+            if(typeof dicts[key] === 'undefined') {
+                localStorage.setItem('d_' + key, JSON.stringify(dict));
+            }
             
             return compressed;
         }
         
-        this.localStorageDecompress = function (key) {
+        this.getItem = function (key) {
             var compressed,
-                h,
                 dict;
             
             compressed = localStorage.getItem(key);
-            h = XXH(compressed, seed).toString(16);
             
-            if(typeof dicts[key] === 'undefined')
-                dict = JSON.parse(localStorage.getItem('d_' + h));
-            else
+            if(typeof dicts[key] === 'undefined') {
+                dict = JSON.parse(localStorage.getItem('d_' + key));
+            } else {
                 dict = dicts[key];
-            
+            }
             return _decompress(compressed, dict);
         }
         
-        this.getDict = function (key, ns) {
+        this.getDict = function (key) {
             var compressed,
-                h,
                 dict;
-            
-            compressed = localStorage.getItem(key);
-            h = XXH(compressed, seed).toString(16);
-            
-            if(ns === 'undefined')
-                dict = JSON.parse(localStorage.getItem('d_' + h));
-            else
-                dict = dicts[h];
+                    
+            if(typeof dicts[key] === 'undefined') {
+                dict = JSON.parse(localStorage.getItem('d_' + key));
+            } else {
+                dict = dicts[key];
+            }
             
             return dict;
         }
         
-        this.setDict = function (dic, key, ns) {
+        this.setDict = function (key, dic, ns) {
             var compressed,
                 h,
                 dict;
                         
-            if(ns === 'undefined')
+            if(typeof ns === 'undefined') {
                 localStorage.setItem('d_' + key, dic);
-            else
+            } else {
                 dicts[key] = dic;
+            }
         }
     }
     

@@ -1,7 +1,7 @@
 (function (jjlc) {
     "use strict";
     
-    var testString = '{' +
+    var tst_s = '{' +
         '"$schema": "http://json-schema.org/draft-04/schema#",' +
         '"title": "Product",'  +
         '"description": "A product from Acme\'s catalog",'  +
@@ -52,22 +52,26 @@
         '    }'  +
         '}],'  +
         '"required": ["id", "name", "price"]'  +
-        '}';
+        '}';    
     
-    var l = testString.length;
+    var l = tst_s.length;
     var start = new Date().getTime();
     console.log('COMPRESS');
-    var compressed = JJLC.localStorageCompress('testStr', testString);
+    var compressed = JJLC.setItem('testStr', tst_s);
+
+    var dict = JSON.stringify(JJLC.getDict('testStr'));    
+    var size = compressed.length + dict.length;
 
     console.log('initial size : ' + l + ' c');
-    console.log('compressed size : ' + compressed.length + ' c');
-    console.log('win : ' + (l - compressed.length) + ' c');
-    console.log('win : ' + ((l - compressed.length) / l * 100).toPrecision(3) + '%');
-
+    console.log('compressed size : ' + size + ' c');
+    console.log('win : ' + (l - size) + ' c');
+    console.log('win : ' + ((l - size) / l * 100).toPrecision(3) + '%');
     console.log('DECOMPRESS');
-    var decompressed = JJLC.localStorageDecompress('testStr');
-    //var decompressed = JJLC.decompress(compressed);
+    
+    var decompressed = JJLC.getItem('testStr');
     var end = new Date().getTime();
     var time = end - start;
     console.log('execution : ' + time + ' milliseconds');
+    
+    //console.log(decompressed);
 }());
