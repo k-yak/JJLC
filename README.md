@@ -77,29 +77,28 @@ Create dictionary with your huge json.
 
 ###Results
 
-####little file 
+####small JSON 
 ```
-COMPRESS
-initial size : 1065 c
-compressed size : 796 c
-win : 269 c
-win : 25.3%
-DECOMPRESS
-execution : 12 milliseconds
-```
-
-####big file
-```
-COMPRESS
-initial size : 342359 c
-compressed size : 201528 c
-win : 140831 c
-win : 41.1%
-DECOMPRESS
-execution : 89 milliseconds
+COMPRESS AND DECOMPRESS
+initial size : 4.67 kB
+compressed size : 2.95 kB
+win : 1.72 kB
+win : 36.8%
+execution : 1 milliseconds
 ```
 
-####little file - expert mode
+####big JSON
+```
+COMPRESS AND DECOMPRESS
+initial size : 233 kB
+compressed size : 128 kB
+win : 105 kB
+win : 45.1%
+execution : 18 milliseconds
+
+```
+
+####little JSON - expert mode
 ```
 COMPRESS
 initial size : 1065 c
